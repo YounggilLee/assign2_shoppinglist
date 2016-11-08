@@ -6,8 +6,8 @@
 package gil;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,9 +27,29 @@ public class WishList extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       //get req params
+       //for storing wishlist
+       Cookie cookie = null;
+       //get cookie array which is from client side
+       Cookie[] cookies = request.getCookies();
+       if(cookies != null){
+           //find cookie
+           for (int i = 0; i < cookies.length; ++i) {
+               if(cookies[i].getName().equals("wishList")){
+                   // found it!
+                   cookie = cookies[i];
+                   break;
+               }
+           }
+       }
+       
+       // debug
+        System.out.println(cookie);
+
+        //get req params
        String wish = request.getParameter("wish");
        String clear = request.getParameter("clear");
+       
+       
        
        //if clear was set, expire cokkie
        if(clear != null){
