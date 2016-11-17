@@ -34,7 +34,7 @@ public class WishList extends HttpServlet {
             throws ServletException, IOException {
 
         //prepare output
-        response.setContentType("application/json");
+       response.setContentType("application/json");     
         PrintWriter out = response.getWriter();
 
         //for storing wishlist
@@ -51,7 +51,9 @@ public class WishList extends HttpServlet {
                     // found it!
                     cookie = cookies[i];
                     // debug
-                    out.println("Found Cookie: " + cookie.getValue());
+                   // out.println(cookie.getValue());
+                   
+                                     
                     break;
                 }
             }
@@ -65,7 +67,7 @@ public class WishList extends HttpServlet {
 
             //for checking null when the use push clear button mutiple time
             if (cookie != null) {
-                out.println("clear cookie");
+                //out.println("clear cookie");
 
                 //expire th cookie immediately  
                 cookie.setMaxAge(0);
@@ -85,9 +87,7 @@ public class WishList extends HttpServlet {
                     cookie = new Cookie("wishList", wish);
 
                     wishList = wish;
-//                       String json = "{ " +
-//                      "\"data\":" + wishList +  " }";
-//                                       
+                                       
                 } else {
 
                     // append new item to existing wish list
@@ -96,31 +96,27 @@ public class WishList extends HttpServlet {
 
                     // 2nd, add new wish with delimiter (~)
                     wishList += "~" + wish;
-                    
+
                     //must update cookie value
                     cookie.setValue(wishList);
-                    
-                    
+  
+                    String[] lists = wishList.split("~");
+                                                        
+                    String json = "{" + "\"data\":[" + "\""+ lists[0] +"\"";                    
+                        for (int i = 1; i < lists.length; ++i) {                          
+                            
+                            json +=   ",\""+ lists[i] +"\"";
+                                }
+                        json += "]}";
+                        
+                      out.print(json);
+                     
+                        
+                     
                     //debug
-                    out.println("New Cookie value: " + wishList);
-                    
-                    //update cookie object //set time 48 hours
-                cookie.setMaxAge(48 * 60 * 60);
-                response.addCookie(cookie);                           
-                
-//              String json = "{ " +  "\"data\":[\"" + lists[0] + "\", \"" + lists[1] + "\"] " +
-//                      " }";
-//                   
-//                     JSONObject jObject = new JSONObject();
-//                    JSONArray jArray = new JSONArray();
-//
-//                    try {
-//                   jArray.add(lists);
-//                    } catch (Exception e) {
-//                        log("Data json err : " + e.getMessage());
-//                    }
-//
-//                   String json =  jArray.toString() ;                 
+                   // out.println("New Cookie value: " + wishList);
+
+                    //String[] lists = wishList.split("~");
                     
 //                    JSONObject jObject = new JSONObject();
 //                    JSONArray jArray = new JSONArray();
@@ -133,12 +129,17 @@ public class WishList extends HttpServlet {
 //                    } catch (Exception e) {
 //                        log("Data json err : " + e.getMessage());
 //                    }
-//                    
+//
 //                   String json = jObject.toString();
-//                   out.println(json);
+
+                           
+// "{"  + "  \"data\": ["  + "  {" + "  \"lists[i]\": \"1\" + " }" + "  ]"  + "}"
+                 
                    
                 }
-                
+                //update cookie object //set time 48 hours
+                cookie.setMaxAge(48 * 60 * 60);
+                response.addCookie(cookie);
 
                 //no wish item, get the current wish list only
             } else {
