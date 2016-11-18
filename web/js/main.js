@@ -1,15 +1,3 @@
-// main.js
-// =======
-// JS for Assignment2: WishList
-// It triggers WishList servlet when the html page is loaded and/or
-// <button> is cliecked.
-//
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
-// CREATED: 2016-11-01
-// UPDATED: 2016-11-03
-///////////////////////////////////////////////////////////////////////////////
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // main entry-point
