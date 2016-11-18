@@ -34,26 +34,25 @@ public class WishList extends HttpServlet {
             throws ServletException, IOException {
 
         //prepare output
-       response.setContentType("application/json");     
+        response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
         //for storing wishlist
         Cookie cookie = null;
-
+        String json= null;
+       
+        
         //get cookie array which is from client side
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-
+            String wishList = null;
             //find cookie
             for (int i = 0; i < cookies.length; ++i) {
                 if (cookies[i].getName().equals("wishList")) {
-
                     // found it!
-                    cookie = cookies[i];
-                    // debug
-                   // out.println(cookie.getValue());
-                   
-                                     
+                    cookie = cookies[i];  
+                     
+                     
                     break;
                 }
             }
@@ -87,7 +86,8 @@ public class WishList extends HttpServlet {
                     cookie = new Cookie("wishList", wish);
 
                     wishList = wish;
-                                       
+                  //  json = "{" + "\"data\":[" + "\"" + wishList + "\"" + "]}";
+
                 } else {
 
                     // append new item to existing wish list
@@ -98,26 +98,19 @@ public class WishList extends HttpServlet {
                     wishList += "~" + wish;
 
                     //must update cookie value
-                    cookie.setValue(wishList);
-  
-                    String[] lists = wishList.split("~");
-                                                        
-                    String json = "{" + "\"data\":[" + "\""+ lists[0] +"\"";                    
-                        for (int i = 1; i < lists.length; ++i) {                          
-                            
-                            json +=   ",\""+ lists[i] +"\"";
-                                }
-                        json += "]}";
-                        
-                      out.print(json);
-                     
-                        
-                     
-                    //debug
-                   // out.println("New Cookie value: " + wishList);
+                    cookie.setValue(wishList);            
+                   
 
-                    //String[] lists = wishList.split("~");
-                    
+//                   json = "{" + "\"data\":[" + "\"" + lists[0] + "\"";
+//      
+//                    for (int i = 1; i < lists.length; ++i) {
+//
+//                        json += ",\"" + lists[i] + "\"";
+//                    }
+//                    json += "]}";
+
+                                       
+     
 //                    JSONObject jObject = new JSONObject();
 //                    JSONArray jArray = new JSONArray();
 //
@@ -131,29 +124,36 @@ public class WishList extends HttpServlet {
 //                    }
 //
 //                   String json = jObject.toString();
-
-                           
-// "{"  + "  \"data\": ["  + "  {" + "  \"lists[i]\": \"1\" + " }" + "  ]"  + "}"
-                 
-                   
+ //                       out.print(json);  
+                    
                 }
+                 
                 //update cookie object //set time 48 hours
                 cookie.setMaxAge(48 * 60 * 60);
                 response.addCookie(cookie);
 
                 //no wish item, get the current wish list only
-            } else {
-                if (cookie != null) {
+            } else if (cookie != null) {
 
-                    //get the prev. wish list
-                    wishList = cookie.getValue();
-
-                    //for (int i = 0; i < lists.length; ++i) {
-                    // json = "\"lists\":[\"" + lists[0] + "\"]" ;
-                    // }         
-                    //out.println("Current Cookie value: " + json);
-                }
+                //get the prev. wish list
+                wishList = cookie.getValue();
             }
+            if (wishList == null){
+                    json = "[]" ;//empty array
+            } else {
+                        //split and construct json array
+                         String[] lists = wishList.split("~");
+                          json = "[" + "\"" + lists[0] + "\"";
+                                for (int i = 1; i < lists.length; ++i) {
+
+                                      json += ",\"" + lists[1] + "\"";
+                                 }
+                                json += "]";   
+                                out.print(json);
+                             }
+                           
+
+            
         }
 
     }
